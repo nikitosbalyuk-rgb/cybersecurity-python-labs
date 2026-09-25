@@ -69,7 +69,11 @@ def log_event(func):
 def create_user(username, password):
     return username, generate_hash(password, SALT)
 
-
+# Чіпляємо наш декоратор на тестову функцію входу
+@log_event
+def dummy_login(username, password):
+    # Імітуємо, що успішно входить тільки admin
+    return username == "admin"
 def run_db_tasks():
     print("--- Завдання 3 ---")
     users_to_register = (("admin", "SuperSecurePass123!"), ("bob", "Short"))
@@ -85,5 +89,7 @@ def run_db_tasks():
             except ValidationError as e:
                 # Відловлюємо нашого юзера з коротким паролем
                 print(f"Помилка {user}: {e}")
-
+        # Робимо тестові входи, щоб згенерувався log.json
+        dummy_login("admin", "SuperSecurePass123!")  # Успішний вхід
+        dummy_login("hacker", "123456")  # Невдалий вхід
     print("Базу створено. Готово!")
