@@ -71,7 +71,7 @@ def create_user(username, password):
 
 # Чіпляємо наш декоратор на тестову функцію входу
 @log_event
-def dummy_login(username, password):
+def dummy_login(username):
     # Імітуємо, що успішно входить тільки admin
     return username == "admin"
 def run_db_tasks():
