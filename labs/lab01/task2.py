@@ -34,7 +34,8 @@ def check_access():
 
     for username in test_users:
         for res_name, res_level in resources:
-
+            # Отримуємо рівень доступу користувача (якщо юзера немає, пишемо "N/A")
+            user_clearance = users[username].get("clearance", 0) if username in users else "N/A"
             # Основна логіка: перевіряємо всі умови відмови і дозволу
             if username not in users:
                 status = "DENY (User not found)"
@@ -47,5 +48,5 @@ def check_access():
             else:
                 status = "DENY (Insufficient clearance)"
 
-            print(f"user=[{username}] resource=[{res_name}] -> {status}")
+            print(f"user=[{username}] clearance=[{user_clearance}] resource=[{res_name} (req:{res_level})] -> {status}")
     print("\n")
