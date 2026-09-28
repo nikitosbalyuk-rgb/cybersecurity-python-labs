@@ -29,13 +29,20 @@ blocked_users = {"contractor99", "temp_user"}  # Множина для швид�
 def check_access():
     print("--- Завдання 2 ---")
 
+    print("Список усіх ресурсів у системі:")
+    for res_name, res_level in resources:
+        print(f" [Ресурс] {res_name:<16} | Вимагає допуск: {res_level}")
+    print("-" * 50)
+
     # Список юзерів для тестування доступу
     test_users = ["admin001", "user123", "contractor99", "unknown_user"]
 
     for username in test_users:
         for res_name, res_level in resources:
+
             # Отримуємо рівень доступу користувача (якщо юзера немає, пишемо "N/A")
             user_clearance = users[username].get("clearance", 0) if username in users else "N/A"
+
             # Основна логіка: перевіряємо всі умови відмови і дозволу
             if username not in users:
                 status = "DENY (User not found)"
@@ -48,5 +55,12 @@ def check_access():
             else:
                 status = "DENY (Insufficient clearance)"
 
-            print(f"user=[{username}] clearance=[{user_clearance}] resource=[{res_name} (req:{res_level})] -> {status}")
+            # Показуємо clearance користувача і вимогу ресурсу
+            print(
+                f"user=[{username:<12}] clearance=[{user_clearance}] resource=[{res_name:<16} (req:{res_level})] -> {status}")
     print("\n")
+
+
+# Дозволяє запускати файл окремо
+if __name__ == "__main__":
+    check_access()

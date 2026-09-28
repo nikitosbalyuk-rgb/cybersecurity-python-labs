@@ -66,18 +66,25 @@ def log_event(func):
     return wrapper
 
 
+# Чіпляємо наш декоратор на тестову функцію входу
+@log_event
+def dummy_login(username, password):
+    # Імітуємо, що успішно входить тільки admin
+    return username == "admin"
+
+
 def create_user(username, password):
     return username, generate_hash(password, SALT)
 
-# Чіпляємо наш декоратор на тестову функцію входу
-@log_event
-def dummy_login(username):
-    # Імітуємо, що успішно входить тільки admin
-    return username == "admin"
+
 def run_db_tasks():
     print("--- Завдання 3 ---")
     users_to_register = (("admin", "SuperSecurePass123!"), ("bob", "Short"))
 
+    # Створюємо папку data, якщо вона раптом видалена
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    print("1. Створення бази користувачів (users.csv)...")
     # Відкриваємо файл і записуємо користувачів
     with open(USERS_CSV, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
@@ -85,11 +92,29 @@ def run_db_tasks():
 
         for user, pwd in users_to_register:
             try:
-                writer.writerow(create_user(user, pwd))
+                login, pwd_hash = create_user(user, pwd)
+                writer.writerow([login, pwd_hash])
+                print(f" [+] Юзер [{login:<5}] зареєстрований. Хеш: {pwd_hash[:20]}...")
             except ValidationError as e:
-                # Відловлюємо нашого юзера з коротким паролем
-                print(f"Помилка {user}: {e}")
-        # Робимо тестові входи, щоб згенерувався log.json
-        dummy_login("admin", "SuperSecurePass123!")  # Успішний вхід
-        dummy_login("hacker", "123456")  # Невдалий вхід
-    print("Базу створено. Готово!")
+                print(f" [-] Відхилено [{user:<5}]: {e}")
+
+    print("\n2. Перевірка системи логування (log.json)...")
+    is_admin = dummy_login("admin", "SuperSecurePass123!")
+    print(f" [*] Спроба входу [admin]  -> {'Дозволено' if is_admin else 'Відмовлено'}")
+
+    is_hacker = dummy_login("hacker", "123456")
+    print(f" [*] Спроба входу [hacker] -> {'Дозволено' if is_hacker else 'Відмовлено'}")
+
+    print("\n3. Вміст файлу журналу (log.json):")
+    if os.path.exists(LOG_JSON):
+        with open(LOG_JSON, "r", encoding="utf-8") as f:
+            print(f.read())
+    else:
+        print("Файл журналу порожній або не створений.")
+
+    print("\nЗавдання 3 завершено. Бази даних оновлено!\n")
+
+
+# Дозволяє запускати файл окремо
+if __name__ == "__main__":
+    run_db_tasks()

@@ -42,7 +42,7 @@ def analyze_passwords():
 
         # Перевірка на заборонені слова та мінімальну довжину
         is_forbidden = (
-                pwd.lower() in forbidden_passwords or length < criteria["min_length"]
+            pwd.lower() in forbidden_passwords or length < criteria["min_length"]
         )
 
         # Перевіряємо наявність різних типів символів у рядку
@@ -58,9 +58,9 @@ def analyze_passwords():
         if is_forbidden:
             status = "Заборонений"
         elif (
-                meets_all
-                and length >= criteria["min_length"] + 4
-                and passwords.count(pwd) == 1
+            meets_all
+            and length >= criteria["min_length"] + 4
+            and passwords.count(pwd) == 1
         ):
             status = "Дуже сильний"  # унікальний і довгий
         elif meets_all and length >= criteria["min_length"]:
@@ -72,3 +72,8 @@ def analyze_passwords():
 
         print(f"{pwd:<20} | {status:<15}")
     print("\n")
+
+
+# Дозволяє запускати файл окремо
+if __name__ == "__main__":
+    analyze_passwords()
