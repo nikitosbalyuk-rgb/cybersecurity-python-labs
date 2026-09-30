@@ -2,11 +2,10 @@ import os
 import random
 import sys
 
-# Додаємо шлях для імпорту нашого файлу зі спільними даними
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from shared.student import VARIANT_NUMBER
+# Додали імпорт імені та групи
+from shared.student import GROUP_NAME, STUDENT_NAME, VARIANT_NUMBER
 
-# Вхідні дані для перевірки
 passwords = [
     "password123",
     "Qwerty!2023",
@@ -30,22 +29,21 @@ forbidden_passwords = {"password", "123456", "admin", "test", "welcome", "qwerty
 
 def analyze_passwords():
     print("--- Завдання 1 ---")
-    print(f"Варіант: {VARIANT_NUMBER}")
+    # Виводимо всі персональні дані за вимогою
+    print(f"Студент: {STUDENT_NAME}")
+    print(f"Група: {GROUP_NAME}")
+    print(f"Варіант: {VARIANT_NUMBER}\n")
 
-    # Вибираємо 3 випадкові паролі і дублюємо їх в кінець списку
     random_indices = [random.randint(0, len(passwords) - 1) for _ in range(3)]
     for idx in random_indices:
         passwords.append(passwords[idx])
 
     for pwd in passwords:
         length = len(pwd)
-
-        # Перевірка на заборонені слова та мінімальну довжину
         is_forbidden = (
             pwd.lower() in forbidden_passwords or length < criteria["min_length"]
         )
 
-        # Перевіряємо наявність різних типів символів у рядку
         has_digit = any(char.isdigit() for char in pwd)
         has_upper = any(char.isupper() for char in pwd)
         has_lower = any(char.islower() for char in pwd)
@@ -54,7 +52,6 @@ def analyze_passwords():
         meets_all = has_digit and has_upper and has_lower and has_special
         meets_some = has_digit or has_upper or has_lower or has_special
 
-        # Визначаємо рівень надійності за заданими умовами
         if is_forbidden:
             status = "Заборонений"
         elif (
@@ -62,7 +59,7 @@ def analyze_passwords():
             and length >= criteria["min_length"] + 4
             and passwords.count(pwd) == 1
         ):
-            status = "Дуже сильний"  # унікальний і довгий
+            status = "Дуже сильний"
         elif meets_all and length >= criteria["min_length"]:
             status = "Сильний"
         elif length >= criteria["min_length"] and meets_some:
@@ -74,6 +71,5 @@ def analyze_passwords():
     print("\n")
 
 
-# Дозволяє запускати файл окремо
 if __name__ == "__main__":
     analyze_passwords()

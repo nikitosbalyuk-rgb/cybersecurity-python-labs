@@ -88,5 +88,49 @@
         "user": "hacker",
         "result": "failure",
         "timestamp": "2026-09-28 13:30:15"
+    },
+    {
+        "event": "login",
+        "user": "admin",
+        "result": "success",
+        "timestamp": "2026-09-28 13:40:38"
+    },
+    {
+        "event": "login",
+        "user": "hacker",
+        "result": "failure",
+        "timestamp": "2026-09-28 13:40:38"
+    },
+    {
+        "event": "login",
+        "user": "admin",
+        "result": "success",
+        "timestamp": "2026-09-30 15:14:52",
+        "args": [],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "alice",
+        "result": "failure",
+        "timestamp": "2026-09-30 15:14:52",
+        "args": [],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "hacker",
+        "result": "failure",
+        "timestamp": "2026-09-30 15:14:52",
+        "args": [],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "admin",
+        "result": "failure",
+        "timestamp": "2026-09-30 15:14:52",
+        "args": [],
+        "kwargs": {}
     }
 ]
