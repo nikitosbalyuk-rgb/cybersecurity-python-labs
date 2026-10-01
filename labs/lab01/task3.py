@@ -45,7 +45,7 @@ def log_event(func):
                 "result": result,
                 "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
                 "args": [],
-                "kwargs": {}
+                "kwargs": {},
             }
             logs = []
             # Обробка винятків при роботі з файлом логів
@@ -77,7 +77,9 @@ def create_users(users_list):
                 try:
                     login_str, pwd_hash = create_user(user, pwd)
                     writer.writerow([login_str, pwd_hash])
-                    print(f" [+] Юзер [{login_str:<8}] зареєстрований. Хеш: {pwd_hash[:20]}...")
+                    print(
+                        f" [+] Юзер [{login_str:<8}] зареєстрований. Хеш: {pwd_hash[:20]}..."
+                    )
                 except (ValidationError, ValueError) as e:
                     print(f" [-] Відхилено [{user:<8}]: {e}")
     except (FileNotFoundError, PermissionError, IOError) as e:
@@ -115,7 +117,7 @@ def main():
         ("frank", "FrankSecure12"),
         ("grace", "GracePassword!"),
         ("heidi", "HeidiSecret99"),
-        ("ivan", "IvanPass2026!")
+        ("ivan", "IvanPass2026!"),
     )
 
     print("1. Створення бази користувачів (users.csv)...")
@@ -144,9 +146,15 @@ def main():
     print("\n3. Перевірка реальної авторизації (login)...")
 
     try:
-        print(f" [*] Вхід [admin] (правильно)  -> {'Успіх' if login('admin', 'SuperSecurePass123!') else 'Відмовлено'}")
-        print(f" [*] Вхід [alice] (неправильно)-> {'Успіх' if login('alice', 'WrongPass!') else 'Відмовлено'}")
-        print(f" [*] Вхід [hacker] (немає)     -> {'Успіх' if login('hacker', '123456789012') else 'Відмовлено'}")
+        print(
+            f" [*] Вхід [admin] (правильно)  -> {'Успіх' if login('admin', 'SuperSecurePass123!') else 'Відмовлено'}"
+        )
+        print(
+            f" [*] Вхід [alice] (неправильно)-> {'Успіх' if login('alice', 'WrongPass!') else 'Відмовлено'}"
+        )
+        print(
+            f" [*] Вхід [hacker] (немає)     -> {'Успіх' if login('hacker', '123456789012') else 'Відмовлено'}"
+        )
 
         print(" [*] Спроба входу з порожнім паролем...")
         login("admin", "")

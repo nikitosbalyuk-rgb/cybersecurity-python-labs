@@ -1,17 +1,48 @@
 users = {
-    "admin001": {"role": "administrator", "clearance": 4, "department": "IT", "active": True},
-    "user123": {"role": "analyst", "clearance": 2, "department": "Security", "active": True},
-    "guest789": {"role": "guest", "clearance": 1, "department": "External", "active": True},
-    "manager456": {"role": "manager", "clearance": 3, "department": "Operations", "active": True},
-    "contractor99": {"role": "contractor", "clearance": 1, "department": "External", "active": False}
+    "admin001": {
+        "role": "administrator",
+        "clearance": 4,
+        "department": "IT",
+        "active": True,
+    },
+    "user123": {
+        "role": "analyst",
+        "clearance": 2,
+        "department": "Security",
+        "active": True,
+    },
+    "guest789": {
+        "role": "guest",
+        "clearance": 1,
+        "department": "External",
+        "active": True,
+    },
+    "manager456": {
+        "role": "manager",
+        "clearance": 3,
+        "department": "Operations",
+        "active": True,
+    },
+    "contractor99": {
+        "role": "contractor",
+        "clearance": 1,
+        "department": "External",
+        "active": False,
+    },
 }
 
 # Повний список з 10 ресурсів
 resources = [
-    ("database_backup", 4), ("user_logs", 2), ("public_docs", 1),
-    ("financial_reports", 3), ("system_config", 4), ("training_materials", 1),
-    ("security_policies", 3), ("audit_logs", 4), ("employee_data", 3),
-    ("temp_files", 1)
+    ("database_backup", 4),
+    ("user_logs", 2),
+    ("public_docs", 1),
+    ("financial_reports", 3),
+    ("system_config", 4),
+    ("training_materials", 1),
+    ("security_policies", 3),
+    ("audit_logs", 4),
+    ("employee_data", 3),
+    ("temp_files", 1),
 ]
 
 security_levels = ("Public", "Internal", "Confidential", "Secret")
@@ -34,8 +65,9 @@ def check_access():
 
     for username in test_users:
         for res_name, res_level in resources:
-
-            user_clearance = users[username].get("clearance", 0) if username in users else 0
+            user_clearance = (
+                users[username].get("clearance", 0) if username in users else 0
+            )
 
             if username not in users:
                 status = "DENY (User not found)"
