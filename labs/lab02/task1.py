@@ -1,10 +1,9 @@
-import os
 import hashlib
 import hmac
+import os
 import re
-from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass
-from typing import List, Set, Optional
+from datetime import datetime, timedelta, timezone
 
 # Константа кількості ітерацій для хешування пароля (чим більше, тим безпечніше)
 HASH_ITERATIONS = 100_000
@@ -23,8 +22,8 @@ class User:
         self.active = True
 
         # Приватні атрибути для зберігання пароля, приховані від прямого доступу
-        self.__password_hash: Optional[bytes] = None
-        self.__password_salt: Optional[bytes] = None
+        self.__password_hash: bytes | None = None
+        self.__password_salt: bytes | None = None
 
     @property
     def email(self) -> str:
@@ -75,7 +74,7 @@ class Admin(User):
     """Клас адміністратора, що наслідує базового користувача."""
 
     # Не використовуємо змінювану колекцію (set()) як типовий аргумент, щоб уникнути багів
-    def __init__(self, username: str, email: str, permissions: Optional[Set[str]] = None):
+    def __init__(self, username: str, email: str, permissions: set[str] | None = None):
         super().__init__(username, email, role="admin")
         self.permissions = permissions if permissions is not None else set()
 
@@ -128,7 +127,7 @@ class AuditLog:
     """Журнал аудиту для фіксації подій."""
 
     def __init__(self):
-        self.logs: List[LogEntry] = []
+        self.logs: list[LogEntry] = []
 
     def add_log(self, username: str, action: str):
         entry = LogEntry(
@@ -152,7 +151,7 @@ class UserAccount:
     Реалізує композицію класів User, Session та AuditLog.
     """
 
-    def __init__(self, user: User, session: Optional[Session] = None, audit_log: Optional[AuditLog] = None):
+    def __init__(self, user: User, session: Session | None = None, audit_log: AuditLog | None = None):
         self.user = user
         self.session = session
         self.audit_log = audit_log if audit_log is not None else AuditLog()

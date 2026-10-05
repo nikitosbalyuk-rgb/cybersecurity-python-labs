@@ -1,5 +1,6 @@
 import argparse
-from labs.lab02.task1 import User, Admin, UserAccount
+
+from labs.lab02.task1 import Admin, User, UserAccount
 from labs.lab02.task2 import analyze_access_log
 
 

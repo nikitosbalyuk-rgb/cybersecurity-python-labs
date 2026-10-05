@@ -1,13 +1,14 @@
-import re
-import json
 import csv
+import json
 import logging
+import re
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
-# Налаштовуємо логування подій у консоль
+# Налаштовуємо базове форматування, але створюємо власний логер для Ruff (LOG015)
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 
 def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, top_n: int = 5,
@@ -15,21 +16,21 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
     log_file = Path(log_path)
 
     if not log_file.exists():
-        logging.error(f"Файл {log_path} не знайдено! Переконайся, що він лежить у папці data.")
+        logger.error(f"Файл {log_path} не знайдено! Переконайся, що він лежить у папці data.")
         return
 
-    logging.info(f"Loading access log from {log_path}...")
+    logger.info(f"Loading access log from {log_path}...")
 
-    # Регулярний вираз для розбору рядка логу Nginx/Apache
+    # Регулярний вираз для розбору рядка журналу Nginx/Apache
     log_pattern = re.compile(
         r'(?P<ip>\d+\.\d+\.\d+\.\d+)\s+-\s+-\s+'
-        r'\[(?P<date>.*?)\]\s+'
+        r'\[(?P<date>.*?)]\s+'
         r'"(?P<method>[A-Z]+)\s+(?P<uri>.*?)\s+HTTP/.*?"\s+'
         r'(?P<status>\d{3})\s+(?P<size>\d+|-)'
     )
 
     # Регулярні вирази для пошуку сигнатур атак
-    sqli_pattern = re.compile(r"(UNION.*?SELECT|--|%27)", re.IGNORECASE)
+    sql_injection_pattern = re.compile(r"(UNION.*?SELECT|--|%27)", re.IGNORECASE)
     dt_pattern = re.compile(r"\.\./")
     xss_pattern = re.compile(r"<script.*?>", re.IGNORECASE)
 
@@ -55,9 +56,9 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
             method = match.group('method')
             date_str = match.group('date')
 
-            # Обробка дати (наприклад: 27/Sep/2026:08:15:22 +0000)
+            # Обробка дати з додаванням часового поясу для Ruff (DTZ007)
             try:
-                dt_obj = datetime.strptime(date_str.split()[0], "%d/%b/%Y:%H:%M:%S")
+                dt_obj = datetime.strptime(date_str.split()[0], "%d/%b/%Y:%H:%M:%S").replace(tzinfo=timezone.utc)
                 if min_time is None or dt_obj < min_time:
                     min_time = dt_obj
                 if max_time is None or dt_obj > max_time:
@@ -74,7 +75,7 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
 
             # Шукаємо атаки у URI
             req_line = f"{method} {uri}"
-            if sqli_pattern.search(uri):
+            if sql_injection_pattern.search(uri):
                 attack_alerts.append(f"[ALERT] Potential SQLi attack from {ip}: \"{req_line}\"")
             elif dt_pattern.search(uri):
                 attack_alerts.append(f"[ALERT] Potential Directory Traversal from {ip}: \"{req_line}\"")
@@ -85,7 +86,7 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
     time_range = ""
     if min_time and max_time:
         time_range = f" from {min_time.strftime('%Y-%m-%d %H:%M:%S')} to {max_time.strftime('%Y-%m-%d %H:%M:%S')}"
-    logging.info(f"Processed {parsed_entries} log entries{time_range}.")
+    logger.info(f"Processed {parsed_entries} log entries{time_range}.")
 
     # Вивід Топ IP адрес
     print(f"\n=== Top-{top_n} IP Addresses with Error Statuses ({str(min_status)[:1]}xx/5xx) ===")
@@ -99,7 +100,7 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
     for alert in attack_alerts:
         print(alert)
 
-    # Збереження результатів у файл
+    # Формування та збереження звіту
     out_path = Path(output_path)
     if report_format == "json":
         report_data = {
@@ -117,12 +118,10 @@ def analyze_access_log(log_path: str, output_path: str, min_status: int = 400, t
             for ip, count in top_ips:
                 writer.writerow([ip, count, str(dict(status_counts[ip]))])
 
-    logging.info(f"Analysis report saved to {output_path}")
+    logger.info(f"Analysis report saved to {output_path}")
 
 
-# Дозволяє запустити Завдання 2 повністю окремо для перевірки
 if __name__ == "__main__":
-    # Задаємо тестові параметри за замовчуванням
     analyze_access_log(
         log_path="data/access.log",
         output_path="data/web_analysis_report.json",

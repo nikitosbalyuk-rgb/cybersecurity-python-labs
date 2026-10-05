@@ -56,7 +56,7 @@ def log_event(func):
                 logs.append(log_entry)
                 with open(LOG_JSON, "w", encoding="utf-8") as f:
                     json.dump(logs, f, indent=4)
-            except (FileNotFoundError, PermissionError, IOError) as e:
+            except (OSError, FileNotFoundError, PermissionError) as e:
                 print(f"Системна помилка логування: {e}")
 
     return wrapper
@@ -82,7 +82,7 @@ def create_users(users_list):
                     )
                 except (ValidationError, ValueError) as e:
                     print(f" [-] Відхилено [{user:<8}]: {e}")
-    except (FileNotFoundError, PermissionError, IOError) as e:
+    except (OSError, FileNotFoundError, PermissionError) as e:
         print(f"Помилка доступу до файлу бази даних: {e}")
 
 
@@ -135,7 +135,7 @@ def main():
                 for row in reader:
                     if row:
                         users_db.append((row[0], row[1]))
-    except (FileNotFoundError, PermissionError, IOError) as e:
+    except (OSError, FileNotFoundError, PermissionError) as e:
         print(f"Помилка читання файлу бази: {e}")
 
     print(f"{'Логін':<10} | {'Хеш (перші 30 символів)':<30}")
@@ -166,7 +166,7 @@ def main():
         if os.path.exists(LOG_JSON):
             with open(LOG_JSON, "r", encoding="utf-8") as f:
                 print(f.read())
-    except (FileNotFoundError, PermissionError, IOError) as e:
+    except (OSError, FileNotFoundError, PermissionError) as e:
         print(f"Помилка читання журналу: {e}")
 
     print("\nЗавдання 3 завершено!\n")
