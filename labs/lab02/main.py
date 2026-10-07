@@ -56,11 +56,22 @@ def main():
 
     # Команда analyze (для Завдання 2)
     analyze_parser = subparsers.add_parser("analyze")
-    analyze_parser.add_argument("--log-file", required=True, help="Шлях до файлу access.log")
+    analyze_parser.add_argument(
+        "--log-file", required=True, help="Шлях до файлу access.log"
+    )
     analyze_parser.add_argument("--output", required=True, help="Шлях до файлу звіту")
-    analyze_parser.add_argument("--min-status", type=int, default=400, help="Мінімальний статус код помилки")
-    analyze_parser.add_argument("--top", type=int, default=5, help="Кількість IP у топі")
-    analyze_parser.add_argument("--format", choices=["json", "csv"], default="json", help="Формат звіту (json або csv)")
+    analyze_parser.add_argument(
+        "--min-status", type=int, default=400, help="Мінімальний статус код помилки"
+    )
+    analyze_parser.add_argument(
+        "--top", type=int, default=5, help="Кількість IP у топі"
+    )
+    analyze_parser.add_argument(
+        "--format",
+        choices=["json", "csv"],
+        default="json",
+        help="Формат звіту (json або csv)",
+    )
 
     args = parser.parse_args()
 
@@ -73,7 +84,7 @@ def main():
             output_path=args.output,
             min_status=args.min_status,
             top_n=args.top,
-            report_format=args.format
+            report_format=args.format,
         )
 
 

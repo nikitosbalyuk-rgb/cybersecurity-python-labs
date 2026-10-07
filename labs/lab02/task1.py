@@ -41,10 +41,7 @@ class User:
         """Хешує пароль з унікальною сіллю та зберігає в приватні атрибути."""
         self.__password_salt = os.urandom(16)
         self.__password_hash = hashlib.pbkdf2_hmac(
-            "sha256",
-            password.encode('utf-8'),
-            self.__password_salt,
-            HASH_ITERATIONS
+            "sha256", password.encode("utf-8"), self.__password_salt, HASH_ITERATIONS
         )
 
     def check_password(self, password: str) -> bool:
@@ -53,10 +50,7 @@ class User:
             return False
 
         test_hash = hashlib.pbkdf2_hmac(
-            "sha256",
-            password.encode('utf-8'),
-            self.__password_salt,
-            HASH_ITERATIONS
+            "sha256", password.encode("utf-8"), self.__password_salt, HASH_ITERATIONS
         )
         # Використовуємо безпечне порівняння для запобігання атакам за часом
         return hmac.compare_digest(self.__password_hash, test_hash)
@@ -67,7 +61,9 @@ class User:
 
     def __str__(self) -> str:
         status = "Активний" if self.active else "Заблокований"
-        return f"Користувач {self.username} ({self.email}) - Роль: {self.role} [{status}]"
+        return (
+            f"Користувач {self.username} ({self.email}) - Роль: {self.role} [{status}]"
+        )
 
 
 class Admin(User):
@@ -118,6 +114,7 @@ class Session:
 @dataclass
 class LogEntry:
     """Клас даних для представлення одного запису аудиту."""
+
     timestamp: datetime
     username: str
     action: str
@@ -131,9 +128,7 @@ class AuditLog:
 
     def add_log(self, username: str, action: str):
         entry = LogEntry(
-            timestamp=datetime.now(timezone.utc),
-            username=username,
-            action=action
+            timestamp=datetime.now(timezone.utc), username=username, action=action
         )
         self.logs.append(entry)
 
@@ -151,7 +146,12 @@ class UserAccount:
     Реалізує композицію класів User, Session та AuditLog.
     """
 
-    def __init__(self, user: User, session: Session | None = None, audit_log: AuditLog | None = None):
+    def __init__(
+        self,
+        user: User,
+        session: Session | None = None,
+        audit_log: AuditLog | None = None,
+    ):
         self.user = user
         self.session = session
         self.audit_log = audit_log if audit_log is not None else AuditLog()
@@ -164,7 +164,9 @@ class UserAccount:
             return False
 
         if not self.user.active:
-            self.audit_log.add_log(self.user.username, "login_failure (account blocked)")
+            self.audit_log.add_log(
+                self.user.username, "login_failure (account blocked)"
+            )
             return False
 
         if self.user.check_password(password):
