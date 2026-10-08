@@ -22,6 +22,7 @@ def run_demo():
 
     # Адміністратор і права
     admin = Admin("root_admin", "admin@corp.local")
+    admin.set_password("AdminSuperPass!123")
     admin.grant_permission("READ_LOGS")
     admin.grant_permission("MANAGE_USERS")
     print(admin)
