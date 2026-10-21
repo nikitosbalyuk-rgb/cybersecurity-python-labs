@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 # Підтягуємо номер варіанту
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
@@ -43,7 +43,7 @@ def log_event(func):
                 "event": "login",
                 "user": username,
                 "result": result,
-                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                "timestamp": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S"),
                 "args": [],
                 "kwargs": {},
             }

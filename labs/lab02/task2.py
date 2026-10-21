@@ -3,7 +3,7 @@ import json
 import logging
 import re
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Налаштовуємо базове форматування, але створюємо власний логер для Ruff (LOG015)
@@ -67,7 +67,7 @@ def analyze_access_log(
             try:
                 dt_obj = datetime.strptime(
                     date_str.split()[0], "%d/%b/%Y:%H:%M:%S"
-                ).replace(tzinfo=timezone.utc)
+                ).replace(tzinfo=UTC)
                 if min_time is None or dt_obj < min_time:
                     min_time = dt_obj
                 if max_time is None or dt_obj > max_time:

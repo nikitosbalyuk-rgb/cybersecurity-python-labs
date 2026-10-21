@@ -3,7 +3,7 @@ import hmac
 import os
 import re
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 # Константа кількості ітерацій для хешування пароля (чим більше, тим безпечніше)
 HASH_ITERATIONS = 100_000
@@ -95,19 +95,19 @@ class Session:
     def __init__(self, ip: str):
         self.ip = ip
         # Фіксуємо час створення сесії в UTC
-        self.login_time = datetime.now(timezone.utc)
+        self.login_time = datetime.now(UTC)
         self.last_activity = self.login_time
 
     def touch(self):
         """Оновлює час останньої активності."""
-        self.last_activity = datetime.now(timezone.utc)
+        self.last_activity = datetime.now(UTC)
 
     def is_active(self, timeout_sec: int) -> bool:
         """Перевіряє, чи не сплив час сесії."""
         if timeout_sec <= 0:
             return False
 
-        time_diff = datetime.now(timezone.utc) - self.last_activity
+        time_diff = datetime.now(UTC) - self.last_activity
         return time_diff < timedelta(seconds=timeout_sec)
 
 
@@ -128,7 +128,7 @@ class AuditLog:
 
     def add_log(self, username: str, action: str):
         entry = LogEntry(
-            timestamp=datetime.now(timezone.utc), username=username, action=action
+            timestamp=datetime.now(UTC), username=username, action=action
         )
         self.logs.append(entry)
 
