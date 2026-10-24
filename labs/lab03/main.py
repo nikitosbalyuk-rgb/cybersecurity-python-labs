@@ -14,7 +14,6 @@ async def lifespan(_app: FastAPI):
     initialize_database()
     yield
 
-# Створюємо сам FastAPI-застосунок з описом предметної області Варіанта 1[cite: 12, 18]
 app = FastAPI(
     title="Реєстр вразливостей вебзастосунку",
     description="API для обліку знахідок перевірки вебзастосунку. Одиниця вимірювання: оцінка небезпеки (від 0 до 10).",
@@ -22,7 +21,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Підключаємо наші маршрути
+# Підключаємо маршрути
 app.include_router(categories.router)
 app.include_router(records.router)
 

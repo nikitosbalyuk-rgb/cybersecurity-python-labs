@@ -27,7 +27,7 @@ class RecordCreate(BaseModel):
     title: str = Field(min_length=3, max_length=120)
     category_id: int = Field(gt=0)
 
-    # Для Варіанта 1: оцінка від 0 до 10, нескінченність (NaN) заборонена
+    # Варіант 1: оцінка від 0 до 10, нескінченність (NaN) заборонена
     value: float = Field(ge=0, le=10, allow_inf_nan=False)
 
     status: Literal["new", "in_progress", "done"]
@@ -36,7 +36,6 @@ class RecordCreate(BaseModel):
 class RecordReplace(RecordCreate):
     # Усі змінювані поля в PUT обов'язкові, тому просто успадковуємо RecordCreate
     pass
-
 
 class RecordRead(RecordCreate):
     id: int = Field(gt=0)
