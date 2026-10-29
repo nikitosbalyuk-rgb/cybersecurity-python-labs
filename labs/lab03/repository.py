@@ -22,7 +22,7 @@ def get_categories() -> list[dict[str, Any]]:
         conn.close()
 
 
-def create_category(name: str) -> dict[str, Any]:
+def create_category(name: str) -> dict[str, Any] | None:
     conn = get_connection()
     try:
         conn.row_factory = dict_factory
@@ -55,11 +55,11 @@ def get_record(record_id: int) -> dict[str, Any] | None:
         conn.row_factory = dict_factory
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT r.*, c.name as category_name 
-            FROM records r 
-            JOIN categories c ON r.category_id = c.id 
-            WHERE r.id = ?
-        """, (record_id,))
+                       SELECT r.*, c.name as category_name
+                       FROM records r
+                                JOIN categories c ON r.category_id = c.id
+                       WHERE r.id = ?
+                       """, (record_id,))
         return cursor.fetchone()
     finally:
         conn.close()
@@ -80,11 +80,11 @@ def get_records(
 
         # Динамічно збираємо SQL-запит залежно від переданих фільтрів
         query = """
-            SELECT r.*, c.name as category_name 
-            FROM records r 
-            JOIN categories c ON r.category_id = c.id 
-            WHERE 1=1
-        """
+                SELECT r.*, c.name as category_name
+                FROM records r
+                         JOIN categories c ON r.category_id = c.id
+                WHERE 1 = 1 \
+                """
         params = []
 
         if category_id is not None:
@@ -109,18 +109,20 @@ def get_records(
         conn.close()
 
 
-def create_record(record: dict[str, Any]) -> dict[str, Any]:
+def create_record(record: dict[str, Any]) -> dict[str, Any] | None:
     conn = get_connection()
     try:
         conn.row_factory = dict_factory
         cursor = conn.cursor()
         with conn:
             cursor.execute("""
-                INSERT INTO records (code, title, category_id, value, status) 
-                VALUES (?, ?, ?, ?, ?)
-            """, (record["code"], record["title"], record["category_id"], record["value"], record["status"]))
+                           INSERT INTO records (code, title, category_id, value, status)
+                           VALUES (?, ?, ?, ?, ?)
+                           """,
+                           (record["code"], record["title"], record["category_id"], record["value"], record["status"]))
             new_id = cursor.lastrowid
-
+        if new_id is None:
+            return None
         return get_record(new_id)
     finally:
         conn.close()
@@ -132,10 +134,16 @@ def update_record(record_id: int, record: dict[str, Any]) -> dict[str, Any] | No
         cursor = conn.cursor()
         with conn:
             cursor.execute("""
-                UPDATE records 
-                SET code = ?, title = ?, category_id = ?, value = ?, status = ? 
-                WHERE id = ?
-            """, (record["code"], record["title"], record["category_id"], record["value"], record["status"], record_id))
+                           UPDATE records
+                           SET code        = ?,
+                               title       = ?,
+                               category_id = ?,
+                               value       = ?,
+                               status      = ?
+                           WHERE id = ?
+                           """,
+                           (record["code"], record["title"], record["category_id"], record["value"], record["status"],
+                            record_id))
 
             if cursor.rowcount == 0:
                 return None
@@ -168,13 +176,14 @@ def create_records_bulk(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         with conn:
             for record in records:
                 cursor.execute("""
-                    INSERT INTO records (code, title, category_id, value, status) 
-                    VALUES (?, ?, ?, ?, ?)
-                """, (record["code"], record["title"], record["category_id"], record["value"], record["status"]))
+                               INSERT INTO records (code, title, category_id, value, status)
+                               VALUES (?, ?, ?, ?, ?)
+                               """, (record["code"], record["title"], record["category_id"], record["value"],
+                                     record["status"]))
                 created_ids.append(cursor.lastrowid)
 
         # Дістаємо всі щойно створені записи для повернення клієнту
-        placeholders = ",".join("?" * len(created_ids))
+        placeholders = ",".join(["?"] * len(created_ids))
         cursor.execute(f"""
             SELECT r.*, c.name as category_name 
             FROM records r 
