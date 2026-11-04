@@ -1,0 +1,25 @@
+{
+  "categories": [
+    {"name": "Мережеві атаки"},
+    {"name": "Шкідливе ПЗ"},
+    {"name": "Соціальна інженерія"},
+    {"name": "Уразливості веб-додатків"},
+    {"name": "Недостатня конфігурація безпеки"}
+  ],
+  "records": [
+    {"code": "CVE-2026-1001", "title": "SQL-ін'єкція у формі входу", "category_id": 4, "value": 9.8, "status": "new"},
+    {"code": "CVE-2026-1002", "title": "Троян у системному оновленні", "category_id": 2, "value": 8.5, "status": "in_progress"},
+    {"code": "CVE-2026-1003", "title": "Фішингова розсилка на пошту", "category_id": 3, "value": 5.0, "status": "done"},
+    {"code": "CVE-2026-1004", "title": "DDoS-атака на головний сервер", "category_id": 1, "value": 7.5, "status": "new"},
+    {"code": "CVE-2026-1005", "title": "Cross-Site Scripting (XSS) у коментарях", "category_id": 4, "value": 6.1, "status": "in_progress"},
+    {"code": "CVE-2026-1006", "title": "Витік даних через відкритий порт 3389", "category_id": 5, "value": 9.1, "status": "new"},
+    {"code": "CVE-2026-1007", "title": "Програма-вимагач (Ransomware)", "category_id": 2, "value": 9.9, "status": "in_progress"},
+    {"code": "CVE-2026-1008", "title": "Перехоплення трафіку (Man-in-the-Middle)", "category_id": 1, "value": 7.4, "status": "new"},
+    {"code": "CVE-2026-1009", "title": "Підробка дзвінка від служби безпеки", "category_id": 3, "value": 4.5, "status": "done"},
+    {"code": "CVE-2026-1010", "title": "Використання дефолтних паролів на роутері", "category_id": 5, "value": 8.0, "status": "in_progress"},
+    {"code": "CVE-2026-1011", "title": "Вразливість нульового дня в браузері", "category_id": 4, "value": 10.0, "status": "new"},
+    {"code": "CVE-2026-1012", "title": "Зараження через USB-накопичувач", "category_id": 2, "value": 5.5, "status": "done"},
+    {"code": "CVE-2026-1013", "title": "Спуфінг IP-адреси", "category_id": 1, "value": 6.8, "status": "in_progress"},
+    {"code": "CVE-2026-1014", "title": "Злам через залишені тестові API-ключі", "category_id": 5, "value": 8.2, "status": "new"}
+  ]
+}
