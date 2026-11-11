@@ -6,7 +6,7 @@ import sys
 from datetime import UTC, datetime
 
 # Підтягуємо номер варіанту
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(str(__file__)), "../../")))
 from shared.student import VARIANT_NUMBER
 
 
@@ -14,7 +14,7 @@ class ValidationError(Exception):
     pass
 
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+DATA_DIR = os.path.join(os.path.dirname(str(__file__)), "data")
 USERS_CSV = os.path.join(DATA_DIR, "users.csv")
 LOG_JSON = os.path.join(DATA_DIR, "log.json")
 

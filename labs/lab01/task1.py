@@ -2,7 +2,7 @@ import os
 import random
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(str(__file__)), "../../")))
 # Додали імпорт імені та групи
 from shared.student import GROUP_NAME, STUDENT_NAME, VARIANT_NUMBER
 
