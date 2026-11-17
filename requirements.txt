@@ -2,3 +2,5 @@ pydantic
 ruff
 fastapi
 uvicorn
+requests
+pytest
