@@ -3,11 +3,7 @@ import math
 
 
 def extract_record(payload: dict, cve_id: str) -> dict | None:
-    """
-    Перевіряє базову структуру відповіді NVD API.
-    Повертає внутрішній запис (словник, що відповідає об'єкту cve)
-    або None, якщо список vulnerabilities порожній.
-    """
+
     if not isinstance(payload, dict) or "vulnerabilities" not in payload:
         raise ValueError(
             "Неправильна структура JSON: очікувався словник із ключем 'vulnerabilities'"
@@ -40,10 +36,7 @@ def extract_record(payload: dict, cve_id: str) -> dict | None:
 
 
 def build_report(record: dict | None, cve_id: str, variant: int) -> dict:
-    """
-    Аналізує внутрішній запис, вибирає оцінку CVSS v3.1
-    і застосовує правило відповідно до варіанта.
-    """
+
     report = {
         "cve_id": cve_id,
         "variant": variant,

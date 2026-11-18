@@ -13,7 +13,7 @@ from shared.student import VARIANT_NUMBER
 
 
 def load_response(path: str) -> dict:
-    """Читає JSON із локального файлу."""
+
     file_path = pathlib.Path(path)
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
