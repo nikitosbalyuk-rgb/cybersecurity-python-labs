@@ -9,14 +9,18 @@ def extract_record(payload: dict, cve_id: str) -> dict | None:
     або None, якщо список vulnerabilities порожній.
     """
     if not isinstance(payload, dict) or "vulnerabilities" not in payload:
-        raise ValueError("Неправильна структура JSON: очікувався словник із ключем 'vulnerabilities'")
+        raise ValueError(
+            "Неправильна структура JSON: очікувався словник із ключем 'vulnerabilities'"
+        )
 
     vulnerabilities = payload["vulnerabilities"]
     if not isinstance(vulnerabilities, list):
         raise ValueError("Поле 'vulnerabilities' має бути списком")
 
     if len(vulnerabilities) > 1:
-        raise ValueError("Очікується не більше одного елемента у списку vulnerabilities")
+        raise ValueError(
+            "Очікується не більше одного елемента у списку vulnerabilities"
+        )
 
     if not vulnerabilities:
         return None
@@ -51,7 +55,7 @@ def build_report(record: dict | None, cve_id: str, variant: int) -> dict:
         "vector": None,
         "rule": {"threshold": 7.0, "field": "attackVector", "expected": "NETWORK"},
         "observed": None,
-        "decision": "other"
+        "decision": "other",
     }
 
     if record is None:
@@ -143,8 +147,13 @@ def build_report(record: dict | None, cve_id: str, variant: int) -> dict:
         return report
 
     score = cvss_data["baseScore"]
-    if not isinstance(score, (int, float)) or isinstance(score, bool) or math.isnan(score) or math.isinf(score) or not (
-            0 <= score <= 10):
+    if (
+        not isinstance(score, (int, float))
+        or isinstance(score, bool)
+        or math.isnan(score)
+        or math.isinf(score)
+        or not (0 <= score <= 10)
+    ):
         raise ValueError("baseScore має бути скінченним числом від 0 до 10")
     report["score"] = float(score)
 
