@@ -155,6 +155,9 @@ def build_report(record: dict | None, cve_id: str, variant: int) -> dict:
         return report
 
     attack_vector = cvss_data["attackVector"]
+    if not isinstance(attack_vector, str):
+        raise ValueError("attackVector має бути рядком")
+
     allowed_vectors = {"NETWORK", "ADJACENT_NETWORK", "LOCAL", "PHYSICAL"}
     if attack_vector not in allowed_vectors:
         raise ValueError(f"attackVector має бути одним із {allowed_vectors}")

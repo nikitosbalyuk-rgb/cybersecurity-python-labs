@@ -63,11 +63,11 @@ def main(argv=None) -> int:
             code = e.response.status_code if e.response is not None else "Unknown"
             sys.stderr.write(f"Помилка: HTTP статус {code}\n")
             return 1
-        except requests.exceptions.RequestException:
-            sys.stderr.write("Помилка: Запит завершився невдало.\n")
-            return 1
         except ValueError:
             sys.stderr.write("Помилка: Отримана відповідь не є валідним JSON.\n")
+            return 1
+        except requests.exceptions.RequestException:
+            sys.stderr.write("Помилка: Запит завершився невдало.\n")
             return 1
 
     try:
